@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import Loading from "../../../UI/Loading";
 import { ActionContext } from "../../../Context/GlobalContext";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "../../../../../../dashbord/src/components/UI/Pagination";
+import Pagination from "../../../../../../dashbord/src/components/UI/Pagination.jsx";
 
 function Stor() {
 
