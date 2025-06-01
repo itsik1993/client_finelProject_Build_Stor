@@ -1,0 +1,192 @@
+import { createContext, useState, useEffect, useContext, useRef } from 'react';
+import axios from 'axios';
+import { AuthContext } from './AuthGlobalContext';
+
+export const ActionContext = createContext();
+
+function ActionProvider({ children }) {
+  const { user, isAuth } = useContext(AuthContext);
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const prevAuthState = useRef(isAuth);
+
+ 
+
+  // --- טעינה של הקובץ ---
+  useEffect(() => {
+    if (!user) {
+ 
+     localStorage.setItem("cart", JSON.stringify([]));
+
+
+    
+ 
+    }
+     else
+      {
+        const userCart= user.user_shopping_cart ;
+        const storedCartString = localStorage.getItem('cart');
+        const storedCart = storedCartString ? JSON.parse(storedCartString) : [];
+    
+        if(storedCart.length > 0) {
+        const mergedMap = new Map();
+
+        // קודם נכניס את המוצרים מהמערך הראשון
+        userCart.forEach(product => {
+          mergedMap.set(product.id, { ...product });
+        });
+        
+        // עכשיו נוסיף את המוצרים מהמערך השני
+        storedCart.forEach(product => {
+          if (mergedMap.has(product.id)) {
+            // אם כבר קיים, נעדכן את הכמות
+            mergedMap.get(product.id).quantity += product.quantity;
+          } else {
+            // אם לא קיים, נכניס חדש
+            mergedMap.set(product.id, { ...product });
+          }
+        });
+ // ניצור מערך שלישי מתוך ה־Map
+     const mergedArray = Array.from(mergedMap.values());  
+     setCart(mergedArray);
+     localStorage.setItem("cart", JSON.stringify(cart));
+
+      }
+     };
+}, [isAuth, user]);
+
+
+
+
+  // --- הוספת מוצר לעגלה ---
+  const addToCart = (product) => {
+    // console.log(product, "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+    // console.log(cart, "cart in add to cart")
+    const existing = cart.find(itemProduct =>
+    {
+      console.log(product._id, "item in cart")
+      console.log(item.product_id , "item product jjjjjjj in cart id")
+      console.log(item._id , "item in cart id vccvcccvcccccc")
+
+      return itemProduct.product_id  === product._id
+    }
+
+    );
+
+    let updatedCart = [];
+    if (existing) {
+      updatedCart = cart.map(item => {
+        if (item.product_id === product._id) {
+          return { ...item, quantity: item.quantity + 1 }; // החזר אובייקט חדש עם כמות מעודכנת
+        }
+        return item; // החזר את הפריט המקורי אם הוא לא המוצר שאותו מחפשים
+      });
+    } else {
+      updatedCart = [...cart, { ...product, quantity: 1 }]; // צור מערך חדש עם הפריט החדש
+    }
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    updateCart(updatedCart);
+  };
+
+
+  // --- מעדכן את הLOCALSTORAGE או ששולח לעדכון בשרת אם הלקוח מאומת ---
+  const updateCart = () => {
+    const savethecart = localStorage.getItem("cart");
+    setCart(savethecart);
+    // if (isAuth) UpdateUserCart(updatedCart);
+    // else localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+
+
+  // ---לעדדכן את העגלה בשרת בעת פעולות ---
+  const UpdateUserCart = async (updatedCart) => {
+    let newCart=[]
+    const id=user._id
+    if (isAuth || user){
+
+      newCart = updatedCart.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+
+    }))
+
+
+
+    try {
+     const{data} = await axios.post(`/users/setShoppingCart/${id}`, newCart);
+      console.log(data,"Cart synced to server");
+    } catch (err) {
+      console.error("Failed to sync cart:", err.message);
+    }
+  };
+
+
+  // --- הסרת כמות מהעגלה ---
+  const removeFromCart = (product) => {
+    const id = product.product_id ;
+   
+    const updatedCart = product.quantity > 1?
+       cart.map(item =>
+          item.product_id === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+      : cart.filter(item => item.product_id !== id);
+
+    updateCart(updatedCart);
+  };
+
+  // --- הסרת מוצר לגמרי מהעגלה ---
+  const removeProduct = (id) => {
+    const updatedCart = cart.filter(item =>
+      item.product_id  !== id
+    );
+    updateCart(updatedCart);
+  };
+
+  const clearCart = () => {
+    const updatedCart = [];
+    updateCart(updatedCart)
+  };
+
+  
+  useEffect(() => {
+    UpdateUserCart(cart);
+  }, [cart]);
+
+
+
+  // --- Totals ---
+  useEffect(() => {
+    const price = cart.reduce(
+      (sum, item) => sum + (item.quantity * (item.product_costumer_price || 0)),
+      0
+    );
+    setTotalPrice(Number(price.toFixed(2)));
+
+    const quantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setTotalProducts(quantity);
+  }, [cart]);
+
+  return (
+    <ActionContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        removeProduct,
+        clearCart,
+        totalPrice,
+        totalProducts,
+      }}
+    >
+      {children}
+    </ActionContext.Provider>
+  );
+}
+}
+
+export default ActionProvider;

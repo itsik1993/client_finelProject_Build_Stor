@@ -1,0 +1,19 @@
+/* כאן מוגדרים המשתנים שישתנו בהתאם למצב הערכה */
+:root {
+  --background: #ffffff;
+  --text: #1a202c;
+  /* משתנים נוספים לפי הצורך */
+}
+
+html.dark {
+  --background: #1a202c;
+  --text: #f7fafc;
+  /* שינוי המשתנים במצב כהה */
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  transition: background-color 0.2s, color 0.2s;
+  
+}

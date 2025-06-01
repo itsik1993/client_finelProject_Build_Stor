@@ -1,0 +1,176 @@
+import { createContext, useState, useEffect, useContext, useRef } from 'react';
+import axios from 'axios';
+import { AuthContext } from './AuthGlobalContext';
+
+export const ActionContext = createContext();
+
+function ActionProvider({ children }) {
+  const { user, isAuth } = useContext(AuthContext);
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const prevAuthState = useRef(isAuth);
+
+  // ---טעינה של הקובץ ---
+  useEffect(() => {
+
+      if (isAuth && user) {
+      
+        setCart(user.user_shopping_cart);
+        console.log(cart, "n44444444")
+        console.log("Loaded cart from server");
+      } else {
+        try {
+          const storedCartString = localStorage.getItem('cart');
+          const storedCart = storedCartString ? JSON.parse(storedCartString) : [];
+          setCart(storedCart);
+          console.log("Loaded cart from localStorage");
+        } catch (err) {
+          console.error("Error loading local cart:", err);
+          setCart([]);
+        }
+      
+    };
+
+    // if (prevAuthState.current && !isAuth) {
+    //   // Save cart to localStorage when logging out
+    //   localStorage.setItem('cart', JSON.stringify(cart));
+    //   console.log("Saved cart to localStorage on logout");
+    // }
+
+    // loadCart();
+    prevAuthState.current = isAuth;
+  }, [isAuth, user]);
+
+
+
+  // ---לעדדכן את העגלה בעת פעולות ---
+  const UpdateUserCart = async (updatedCart) => {
+    if (!isAuth || !user?._id) return;
+
+    const cleanedCart = updatedCart.map(item => ({
+      product_id: item.product_id || item._id,
+      quantity: item.quantity,
+    }));
+
+    try {
+     const{data} = await axios.post(`/users/setShoppingCart/${user._id}`, cleanedCart);
+      console.log(data,"Cart synced to server");
+    } catch (err) {
+      console.error("Failed to sync cart:", err.message);
+    }
+  };
+
+
+  // --- מעדכן את הLOCALSTORAGE או ששולח לעדכון בשרת אם הלקוח מאומת ---
+  const updateCart = (updatedCart) => {
+    setCart(updatedCart);
+    if (isAuth) UpdateUserCart(updatedCart);
+    else localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+
+
+  // --- הוספת מוצר לעגלה ---
+  const addToCart = (product) => {
+    console.log(product, "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+    console.log(cart, "cart in add to cart")
+    const existing = cart.find(item =>
+    {
+      console.log(product._id, "item in cart")
+      console.log(item.product_id , "item product jjjjjjj in cart id")
+      console.log(item._id , "item in cart id vccvcccvcccccc")
+
+      return (item.product_id || item._id) === product._id
+    }
+
+    );
+
+    // const updatedCart = existing
+    //   ? cart.map(item =>
+    //       (item.product_id || item._id) === product._id
+    //         ? { ...item, quantity: item.quantity + 1 }
+    //         : item
+    //     )
+    //   : [...cart, { ...product, quantity: 1 }];
+    let updatedCart = []
+    console.log(existing, "existing");
+    if(existing){
+      updatedCart= cart.map(item => {
+        if((item.product_id || item._id) === product._id){
+          item.quantity = item.quantity + 1
+          console.log(item, "item in cart+1")
+          
+        }
+        else{
+          console.log(item, "null case")
+        }
+      })
+    }
+  
+    else{
+      updatedCart= cart.push({ ...product, quantity: 1 })
+      console.log(product, "updateCart new item")
+    }
+      console.log(product, "updated 000000000000000000000000000cart")
+    updateCart(updatedCart);
+  };
+
+  // --- הסרת  מהעגלה ---
+  const removeFromCart = (product) => {
+    const id = product.product_id || product._id;
+
+    const updatedCart = product.quantity > 1
+      ? cart.map(item =>
+          (item.product_id || item._id) === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+      : cart.filter(item => (item.product_id || item._id) !== id);
+
+    updateCart(updatedCart);
+  };
+
+  // --- הסרת מוצר מהעגלה ---
+  const removeProduct = (id) => {
+    const updatedCart = cart.filter(item =>
+      (item.product_id || item._id) !== id
+    );
+    updateCart(updatedCart);
+  };
+
+  const clearCart = () => {
+    const updatedCart = [];
+    updateCart(updatedCart)
+  };
+
+  // --- Totals ---
+  useEffect(() => {
+    const price = cart.reduce(
+      (sum, item) => sum + (item.quantity * (item.product_costumer_price || 0)),
+      0
+    );
+    setTotalPrice(Number(price.toFixed(2)));
+
+    const quantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setTotalProducts(quantity);
+  }, [cart]);
+
+  return (
+    <ActionContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        removeProduct,
+        clearCart,
+        totalPrice,
+        totalProducts,
+      }}
+    >
+      {children}
+    </ActionContext.Provider>
+  );
+}
+
+export default ActionProvider;
