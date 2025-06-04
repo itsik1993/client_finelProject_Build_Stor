@@ -7,6 +7,8 @@ import {  Edit, ShoppingCart, Heart, Clock, Home, Phone, Mail, CheckCircle, XCir
 function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
   
     const {user,setUser} = useContext(AuthContext)
+      const [phoneError, setPhoneError] = useState('');
+
      const [formData, setFormData] = useState({
     user_firstname:user.user_firstname|| '',
     user_lastname:user.user_lastname|| '',
@@ -41,13 +43,45 @@ function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
     }
     
   });
-    const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-   }
+  //   const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value
+  //   });
+  //  }
+   const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'user_phone_number') {
+      // RegEx לדוגמה עבור מספר טלפון ישראלי (10 ספרות, מתחיל ב-05)
+      // ניתן לשנות את ה-RegEx הזה לפי הפורמט הרצוי
+      const phoneRegex = /^05\d{8}$/; 
+
+      if (value === '' || phoneRegex.test(value)) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+        setPhoneError(''); // מנקה שגיאות אם הקלט תקין
+      } else {
+        setPhoneError('מספר הטלפון אינו תקין. אנא הזן 10 ספרות המתחילות ב-  05 ואין צורך לשים -  (מקף) באמצע');
+        // עדיין מעדכן את ה-formData כדי שהמשתמש יראה את מה שהקליד
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+      }
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
+  };
+
+
+
 
   const cancelChanges = () => {
     setIsEditing(false)
@@ -71,6 +105,8 @@ function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
     };
 
  const handleSave = () => {
+
+
     console.log("Saving changes:", formData);
 
     // תמיד בנה את האובייקט dataToSend, ללא קשר אם האימייל השתנה או לא
@@ -164,6 +200,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                     <button 
                       onClick={isEditing ? handleSave : handleEditToggle}
                       className={`px-4 py-2 rounded-md ${isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"} text-white flex items-center gap-2`}
+                    disabled={phoneError !== ""? true : false}
                     >
                       <Edit className="h-4 w-4" />
                       {isEditing ? "שמור שינויים" : "ערוך פרטים"}
@@ -171,7 +208,12 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                     {isEditing&&
                     <button
                     className={`px-4 py-2 rounded-md  bg-blue-600 hover:bg-blue-700"} text-white flex items-center gap-2`}
-                    onClick={()=>cancelChanges()}
+                    onClick={()=>
+                    {
+                      cancelChanges()
+                      setPhoneError('')
+                    }
+                    }
                     >
                       ביטול
                     </button>
@@ -245,6 +287,8 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                               onChange={handleInputChange}
                               className="w-full p-2 border border-gray-300 rounded-md"
                             />
+                        
+
                           </div>
                         ) : (
                           <p className="p-2 bg-gray-50 rounded-md flex items-center">
@@ -253,6 +297,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                           </p>
                         )}
                       </div>
+                       {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
                     </div>
     
                     {/* Address Section */}

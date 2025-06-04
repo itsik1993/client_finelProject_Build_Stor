@@ -63,6 +63,8 @@ const OrderSummaryPage = () => {
   const [note, setnote] = useState(false);
   // משתנה חדש כדי לעקוב אחרי האם המשתמש לחץ על כפתור התשלום
   const [proceedToPayment, setProceedToPayment] = useState(false);
+  // משתנה חדש כדי לאחסן שגיאות טלפון
+        const [phoneError, setPhoneError] = useState('');
   
   // עדכון ה-state לפי המשתמש המחובר - כאשר יש שינוי ב-isAuth או user
   useEffect(() => {
@@ -179,10 +181,31 @@ const OrderSummaryPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+  if (name === 'phone') {
+      // RegEx לדוגמה עבור מספר טלפון ישראלי (10 ספרות, מתחיל ב-05)
+      // ניתן לשנות את ה-RegEx הזה לפי הפורמט הרצוי
+      const phoneRegex = /^05\d{8}$/; 
+
+      if (value === '' || phoneRegex.test(value)) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+        setPhoneError(''); // מנקה שגיאות אם הקלט תקין
+      } else {
+        setPhoneError('מספר הטלפון אינו תקין. אנא הזן 10 ספרות המתחילות ב-  05 ואין צורך לשים -  (מקף) באמצע');
+        // עדיין מעדכן את ה-formData כדי שהמשתמש יראה את מה שהקליד
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+      }
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmitAddress = (e) => {
@@ -433,7 +456,7 @@ const OrderSummaryPage = () => {
               {isAuth && (
                 <button
                   onClick={handleSubmitAddress}
-                  disabled={ifDisabled}
+                  disabled={ifDisabled || phoneError !== ''} 
                   className={`px-6 py-2 rounded-md hover:bg-blue-700 transition-colors w-full md:w-auto ${ifDisabled
                     ? "bg-gray-400 text-white cursor-not-allowed"
                     : "bg-blue-600 text-white hover:bg-blue-700 transition-colors"}`}
@@ -454,7 +477,10 @@ const OrderSummaryPage = () => {
                 </div>
               )}
             </div>
+          {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
+
           </div>
+          
         )}
 
         {/* Shipping notes */}

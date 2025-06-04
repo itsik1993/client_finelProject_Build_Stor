@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { useMutation } from "@tanstack/react-query";
+import { toastSuccess, toastError } from '../../../UI/Toast';
 
 function ForgotPassword() {
   const styles = {
@@ -20,16 +21,23 @@ function ForgotPassword() {
   };
 
   const [userEmail, setUserEmail] = useState("");
+  const [disableForm, setDisableForm] = useState(false);
+const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationKey: ["forgot_password"],
     mutationFn: async () => await axios.post(`/Users/forgotPassword?email=${userEmail}`),
     onSuccess: (data) => {
       console.log(data);
+              toastSuccess("נשלח מייל לאיפוס הסיסמה");
+              navigate("/Login");
+
+      
       if (data.status === 200) {
         console.log("נשלח אימייל לאיפוס סיסמה");
       } else {
         console.log("הייתה בעיה בשליחת האימייל, נסה שוב מאוחר יותר");
+        toastError("הייתה בעיה בשליחת האימייל, נסה שוב מאוחר יותר");
       }
     },
     onError: (err) => {

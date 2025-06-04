@@ -49,7 +49,7 @@ function UsereditObjectHistoryModal() {
            {" רחוב:    "}{editObject?.order?.order_shipment_address?.street +" "+editObject?.order?.order_shipment_address?.building_number}
            {" , "}{editObject?.order?.order_shipment_address?.city}
            {" , דירה: "}{editObject?.order?.order_shipment_address?.aprtmernt_number?editObject?.order?.order_shipment_address.aprtmernt_number:""}
-           {" , מיקוד: "}{editObject?.order?.order_shipment_address?.user_postal_code?editObject?.order?.order_shipment_address.user_postal_code:""}
+           {" , מיקוד: "}{editObject?.order?.order_shipment_address?.postal_code?editObject?.order?.order_shipment_address.postal_code:""}
            </p>
         </div>
 
@@ -70,10 +70,10 @@ function UsereditObjectHistoryModal() {
               <tbody >
                 {editObject?.order?.order_products?.map((item, idx) => (
                   <tr key={idx} className='mb-10'>
-                    <td className='text-center'>{item._id?.product_name }</td>
-                    <td className='text-center'>{item.order_quantity}</td>
+                    <td className='text-right'>{item._id?.product_name }</td>
+                    <td className='text-center'>{item.quantity}</td>
                     <td className='text-center'>₪{item._id?.product_costumer_price}</td>
-                    <td className='text-center'>₪{item.order_quantity * item._id?.product_costumer_price}</td>
+                    <td className='text-center'>₪{item.quantity * item._id?.product_costumer_price}</td>
                     <td className='flex justify-center'>
                       <img className="h-[48px] w-[80px] " src={item._id?.product_image} alt="" />
                       

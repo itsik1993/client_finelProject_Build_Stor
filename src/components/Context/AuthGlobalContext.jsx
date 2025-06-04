@@ -5,6 +5,7 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 // import { toastSuccess , toastError } from "../lib/Toast";
 // import  GlobalContext  from "../Context/GlobalContext";
+import { toastSuccess, toastError } from '../UI/Toast';
 
 export const AuthContext = createContext();
 
@@ -20,7 +21,7 @@ function AuthProvider({ children }) {
       console.log("the values")
         const { data } = await axios.post("/Users/Login", values);
         if(data.success){
-        //   toastSuccess(data.message);
+          toastSuccess(data.message);
 
           setIsAuth(true);
           console.log(data ,"the user is dddddddddddddddddddddddddddddddddddd");
@@ -30,7 +31,7 @@ function AuthProvider({ children }) {
       } catch (error) {
         console.log(error);
         const msg = error.response.data.error
-        // toastError(msg)
+        toastError(msg)
         return false;
       }
   }

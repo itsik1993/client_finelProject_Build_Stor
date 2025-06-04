@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, Link ,useNavigate} from 'react-router-dom';
 import { useMutation } from "@tanstack/react-query";
+import { toastSuccess, toastError } from '../../../UI/Toast.jsx';
+
 
 function ResetPassword() {
   const styles = {
@@ -46,9 +48,11 @@ const navigate = useNavigate();
       console.log(data);
       if (data.status === 200) {
         console.log("הסיסמה אופסה בהצלחה");
+        toastSuccess("הסיסמה אופסה בהצלחה");
         navigate("/Login");
       } else {
         console.log("הייתה בעיה באיפוס הסיסמה, נסה שוב מאוחר יותר");
+        toastError("הייתה בעיה באיפוס הסיסמה, נסה שוב מאוחר יותר");
       }
     },
     onError: (err) => {
