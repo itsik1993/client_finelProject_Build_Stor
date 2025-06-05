@@ -14,6 +14,8 @@ function SingelProduct() {
   const { addToCart ,cart ,removeFromCart } = useContext(ActionContext);
 
   // שליפת הנתונים של המוצר הבודד
+
+
   const { 
     data: productData,
     isLoading,
@@ -127,6 +129,12 @@ function SingelProduct() {
   const subcategories = product.product_Subcategory ?
     (Array.isArray(product.product_Subcategory) ? product.product_Subcategory : [product.product_Subcategory.subcategory_name || product.product_Subcategory]) :
     [];
+// בדיקה אם יש קטגוריות או תתי-קטגוריות
+// const allCategorises = [...categories, ...subcategories];
+
+//   console.log("קטגוריות:", allCategorises);
+console.log("קטגוריות:", categories);
+  console.log("תתי-קטגוריות:", subcategories);
 
   // יצירת מערך גלריית תמונות (או מערך עם תמונה בודדת אם אין גלריה)
   const imageGallery = [
@@ -166,7 +174,7 @@ function SingelProduct() {
               <>
                 <li>
                   <a href="#" className="text-blue-600 hover:text-blue-800">
-                    {typeof subcategories[0] === 'object' ? subcategories[0].subcategory_name : subcategories[0]}
+                    {typeof subcategories[0] === 'object' ? subcategories[0].Subcategory_name : subcategories[0]}
                   </a>
                 </li>
                 <li className="text-gray-500 mx-2">/</li>
@@ -294,7 +302,7 @@ function SingelProduct() {
                     ))}
                     {subcategories.map((subcat, index) => (
                       <span key={`subcat-${index}`} className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800">
-                        {typeof subcat === 'object' ? subcat.subcategory_name : subcat}
+                        {typeof subcat === 'object' ? subcat.Subcategory_name : subcat}
                       </span>
                     ))}
                   </div>
