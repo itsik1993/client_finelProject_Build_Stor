@@ -100,7 +100,9 @@ const OrderSummaryPage = () => {
       }));
 
       // תבדוק אם יש מספיק מידע בכתובת כדי לא להראות את טופס העריכה
-      setIsEditingAddress(!user.user_address?.user_city);
+      setIsEditingAddress(!user.user_address?.user_city||!user.user_address?.user_street
+        || !user.user_address?.user_Bilding_number || !user.user_phone_number || !user.user_address?.user_postal_code
+      );
     } else {
       // המשתמש אינו מחובר - נאפס את כל הנתונים
       resetFormAndOrder();
