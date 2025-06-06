@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {AuthContext} from '../../../Context/AuthGlobalContext'
 import axios from "axios";
 import {  Edit, ShoppingCart, Heart, Clock, Home, Phone, Mail, CheckCircle, XCircle } from "lucide-react";
-
+import { toastSuccess, toastError } from '../../../UI/Toast';
 function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
 
 
@@ -230,14 +230,17 @@ console.log(dataToSend,"Email changed, sending update with new email.");
       console.log(data);
       if (data.status === 200) {
         console.log(" פרופיל עודכן בהצלחה תבדוק את המייל לאמת אותו");
+        toastSuccess("פרופיל עודכן בהצלחה,  לפני שיבוצע השינוי תבדוק את המייל  החדש לאימות");
         setIsEditing(false); // סגירת מצב העריכה
 
       } else {
         console.log("הייתה בעיה  בעדכון הפרופיל, נסה שוב מאוחר יותר");
+        toastError("הייתה בעיה  בעדכון הפרופיל, נסה שוב מאוחר יותר");
       }
     },
     onError: (err) => {
       console.log(err);
+      toastError("הייתה בעיה  בעדכון הפרופיל, נסה שוב מאוחר יותר");
     },
   });
 
