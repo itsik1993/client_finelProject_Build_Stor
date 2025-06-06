@@ -10,7 +10,6 @@ function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
   
     const {user,setUser} = useContext(AuthContext)
       const [phoneError, setPhoneError] = useState('');
-console.log(userData?.data," אני 6666666666666666666 בדף הפרופיל")
   //    const [formData, setFormData] = useState({
   //   user_firstname:user.user_firstname|| '',
   //   user_lastname:user.user_lastname|| '',
