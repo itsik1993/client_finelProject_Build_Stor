@@ -1,48 +1,101 @@
-import React,{useContext,useState} from 'react'
+import React,{useContext,useState ,useEffect} from 'react'
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {AuthContext} from '../../../Context/AuthGlobalContext'
 import axios from "axios";
 import {  Edit, ShoppingCart, Heart, Clock, Home, Phone, Mail, CheckCircle, XCircle } from "lucide-react";
 
 function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
+
+
   
     const {user,setUser} = useContext(AuthContext)
       const [phoneError, setPhoneError] = useState('');
-
-     const [formData, setFormData] = useState({
-    user_firstname:user.user_firstname|| '',
-    user_lastname:user.user_lastname|| '',
-    user_email:user.user_email|| '',
-    verifyEmail:user.verifyEmail||false,
-    user_phone_number: user.user_phone_number||'',
+console.log(userData?.data," אני 6666666666666666666 בדף הפרופיל")
+  //    const [formData, setFormData] = useState({
+  //   user_firstname:user.user_firstname|| '',
+  //   user_lastname:user.user_lastname|| '',
+  //   user_email:user.user_email|| '',
+  //   verifyEmail:user.verifyEmail||false,
+  //   user_phone_number: user.user_phone_number||'',
    
-      user_city:user.user_address?.user_city||'',
-      user_street:user.user_address?.user_street||'',
-      user_Bilding_number:user.user_address?.user_Bilding_number||'',
-      user_apartment_number:user.user_address?.user_apartment_number||'', 
-      user_postal_code:user.user_address?.user_postal_code||'',
+  //     user_city:user.user_address?.user_city||'',
+  //     user_street:user.user_address?.user_street||'',
+  //     user_Bilding_number:user.user_address?.user_Bilding_number||'',
+  //     user_apartment_number:user.user_address?.user_apartment_number||'', 
+  //     user_postal_code:user.user_address?.user_postal_code||'',
+  //   replacementEmail: '', // מייל חדש במקרה של שינוי
+    
+  // });
+       const [formData, setFormData] = useState({
+    user_firstname:userData?.data?.user_firstname|| user?.user_firstname|| '',
+    user_lastname:userData?.data?.user_lastname|| user?.user_lastname|| '',
+    user_email:userData?.data?.user_email|| user?.user_email|| '',
+    verifyEmail:userData?.data?.verifyEmail||user?.verifyEmail||false,
+    user_phone_number: userData?.data?.user_phone_number||user?.user_phone_number||'',
+   
+      user_city:userData?.data?.user_address?.user_city||user?.user_address?.user_city||'',
+      user_street:userData?.data?.user_address?.user_street||user?.user_address?.user_street||'',
+      user_Bilding_number:userData?.data?.user_address?.user_Bilding_number||user?.user_address?.user_Bilding_number||'',
+      user_apartment_number:userData?.data?.user_address?.user_apartment_number||user?.user_address?.user_apartment_number||'', 
+      user_postal_code:userData?.data?.user_address?.user_postal_code||user?.user_address?.user_postal_code||'',
     replacementEmail: '', // מייל חדש במקרה של שינוי
     
   });
 
 
-      const [OriginalData, setOriginalData] = useState({
-      user_firstname:user.user_firstname|| '',
-      user_lastname:user.user_lastname|| '',
-      user_email:user.user_email|| '',
-      verifyEmail:user.verifyEmail||false,
-      user_phone_number: user.user_phone_number||'',
-      user_address:{
-      user_city:user.user_address?.user_city||'',
-      user_street:user.user_address?.user_street||'',
-      user_Bilding_number:user.user_address?.user_Bilding_number||'',
-      user_apartment_number:user.user_address?.user_apartment_number||'', 
-      user_postal_code:user.user_address?.user_postal_code||'',
-      replacementEmail: '', // מייל חדש במקרה של שינוי
+  //     const [OriginalData, setOriginalData] = useState({
+  //     user_firstname:user.user_firstname|| '',
+  //     user_lastname:user.user_lastname|| '',
+  //     user_email:user.user_email|| '',
+  //     verifyEmail:user.verifyEmail||false,
+  //     user_phone_number: user.user_phone_number||'',
+  //     user_address:{
+  //     user_city:user.user_address?.user_city||'',
+  //     user_street:user.user_address?.user_street||'',
+  //     user_Bilding_number:user.user_address?.user_Bilding_number||'',
+  //     user_apartment_number:user.user_address?.user_apartment_number||'', 
+  //     user_postal_code:user.user_address?.user_postal_code||'',
+  //     replacementEmail: '', // מייל חדש במקרה של שינוי
+
+  //   }
+  // });
+   const [OriginalData, setOriginalData] = useState({
+    user_firstname:userData?.data?.user_firstname|| user?.user_firstname|| '',
+    user_lastname:userData?.data?.user_lastname|| user?.user_lastname|| '',
+    user_email:userData?.data?.user_email|| user?.user_email|| '',
+    verifyEmail:userData?.data?.verifyEmail||user?.verifyEmail||false,
+    user_phone_number: userData?.data?.user_phone_number||user?.user_phone_number||'',
+   
+      user_city:userData?.data?.user_address?.user_city||user?.user_address?.user_city||'',
+      user_street:userData?.data?.user_address?.user_street||user?.user_address?.user_street||'',
+      user_Bilding_number:userData?.data?.user_address?.user_Bilding_number||user?.user_address?.user_Bilding_number||'',
+      user_apartment_number:userData?.data?.user_address?.user_apartment_number||user?.user_address?.user_apartment_number||'', 
+      user_postal_code:userData?.data?.user_address?.user_postal_code||user?.user_address?.user_postal_code||'',
+    replacementEmail: '', // מייל חדש במקרה של שינוי
 
     }
+  );
+
+
+  useEffect(() => {
+setFormData({
+    user_firstname: user.user_firstname || '',
+    user_lastname: user.user_lastname || '',
+    user_email: user.user_email || '',
+    verifyEmail: user.verifyEmail || false,
+    user_phone_number: user.user_phone_number || '',
     
+      user_city: user.user_address?.user_city || '',
+      user_street: user.user_address?.user_street || '',
+      user_Bilding_number: user.user_address?.user_Bilding_number || '',
+      user_apartment_number: user.user_address?.user_apartment_number || '', 
+      user_postal_code: user.user_address?.user_postal_code || '',  
+    replacementEmail: '', // מייל חדש במקרה של שינוי
   });
+
+   }, [userData]);
+
+
   //   const handleInputChange = (e) => {
   //   const { name, value } = e.target;
   //   setFormData({

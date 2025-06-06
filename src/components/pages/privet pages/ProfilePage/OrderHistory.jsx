@@ -14,7 +14,7 @@ const { openModal } = useContext(ActionContext);
   return (
     <div>
     <h2 className="text-xl font-bold mb-6">היסטוריית הזמנות</h2>
-    {userData.length> 0 ? (
+    {userData?.length> 0 ? (
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>

@@ -150,7 +150,11 @@ const [isLoading, setIsLoading] = useState(false);
         onChange={handleChange}
         required
       />
+      {values.user_password !== values.user_confirmPassword && values.user_confirmPassword !== "" && (
+        <p className='text-red-500 mt-2'>הסיסמאות אינן תואמות</p>)}
+      
     </div>
+
   
     <div className='mb-5'>
       <div className='flex gap-1'>
@@ -170,7 +174,7 @@ const [isLoading, setIsLoading] = useState(false);
       //     ? true
       //     : isLoading
       // }
-      disabled={isLoading} 
+      disabled={isLoading || values.user_password !=values.user_confirmPassword} 
       style={styles.button }
       onMouseOver={(e) => e.target.style.backgroundColor = styles.buttonHover.backgroundColor}
       onMouseOut={(e) => e.target.style.backgroundColor = styles.button.backgroundColor}

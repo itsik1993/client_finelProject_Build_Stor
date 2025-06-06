@@ -8,7 +8,7 @@ import WishList from './WishList';
 import axios from 'axios';
 import { User, Edit, ShoppingCart, Heart, Clock, Home, Phone, Mail, CheckCircle, XCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-
+import Loading from '../../../UI/Loading';
 
 
 
@@ -34,7 +34,7 @@ function Profile() {
     error: getUserError,
     isError: isgetUserError
   } = useQuery({
-    queryKey: ["getUser", ],
+    queryKey: ["getUser"],
     queryFn: async () => (await axios.get(`/Users/getuser/${user._id}`)).data,
     select: ({ data }) => ({ data }),
     staleTime: 1000 * 60,
@@ -83,6 +83,8 @@ function Profile() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 text-right" dir="rtl">
       {/* Header */}
+      { isgetUserLoading && 
+        <Loading />}
       <header className="bg-blue-600 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">הפרופיל שלי</h1>
@@ -101,9 +103,9 @@ function Profile() {
         
         {/* Content Area */}
         <section className="md:w-3/4 bg-white rounded-lg shadow-md p-6">
-        {activeTab === "personal" && <PersonalDetails  isEditing={isEditing} setIsEditing={setIsEditing}  handleEditToggle={handleEditToggle}  />}
-        {activeTab === "orders" && <OrderHistory userData={getUserData.data.user_orders_history} activeTab={activeTab}/>} 
-        {  activeTab === "wishlist" && <WishList userData={getUserData.data.user_whishlist} user={user} activeTab={activeTab}/>}
+        {activeTab === "personal" && <PersonalDetails userData={getUserData}  isEditing={isEditing} setIsEditing={setIsEditing}  handleEditToggle={handleEditToggle}  />}
+        {activeTab === "orders" && <OrderHistory userData={getUserData?.data?.user_orders_history} activeTab={activeTab}/>} 
+        {  activeTab === "wishlist" && <WishList userData={getUserData?.data?.user_whishlist} user={user} activeTab={activeTab}/>}
          
         </section>
       </main>
