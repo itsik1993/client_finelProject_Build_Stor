@@ -122,7 +122,7 @@ function ItemCart({ item }) {
         </td>
         <td className="px-2 py-4 text-center align-middle">
           <div className="break-words font-semibold text-gray-900 leading-tight text-sm">
-            {item.product_details ? item.product_details : item._id.product_details || "ללא פירוט"}
+            {item.product_description ? item.product_description : item._id.product_description || "ללא פירוט"}
           </div>
         </td>
         <td className="px-2 py-4 text-center align-middle">
