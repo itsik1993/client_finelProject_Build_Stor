@@ -43,7 +43,7 @@ function ProductCard({ product, addToCart, cart }) {
                     <h5 className="text-xl tracking-tight font-bold text-slate-900">{product.product_name}</h5>
                 </a>
                 <div className='mt-2 mb-2 flex items-center '>
-                    <span className="text-s text-slate-900 ">{product.product_details}</span>
+                    <span className="text-s text-slate-900 ">{product.product_description}</span>
                 </div>
                 {/* <div className="mt-2 mb-5 flex items-center justify-between">
                     <p>
