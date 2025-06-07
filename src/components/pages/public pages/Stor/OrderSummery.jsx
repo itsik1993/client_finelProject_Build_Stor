@@ -120,7 +120,7 @@ const OrderSummaryPage = () => {
       postal_code: "",
       shipment_note: "",
       NotRegisterPersone:"",
-      costumer_mail:user?.user_email||""
+      costumer_mail:isAuth&&user?.user_email||""
 
     });
 

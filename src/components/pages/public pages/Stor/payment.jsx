@@ -56,7 +56,7 @@ function payment() {
 
   const { mutate: createNewOrderMutation } = useMutation({
     mutationKey: ["create_New_Order"],
-    mutationFn: async () => await axios.post(`/Orders/CreateNewOrder`, orderdata),
+    mutationFn: async () => await axios.post(`/Orders/CreateNewOrder`, {orderdata}),
     onSuccess: (data) => {
       console.log(data);
       if (data.status === 200) {
