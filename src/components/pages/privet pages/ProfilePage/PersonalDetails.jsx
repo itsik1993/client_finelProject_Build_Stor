@@ -78,17 +78,17 @@ function PersonalDetails({userData, isEditing,setIsEditing, handleEditToggle}) {
 
   useEffect(() => {
 setFormData({
-    user_firstname: user.user_firstname || '',
-    user_lastname: user.user_lastname || '',
-    user_email: user.user_email || '',
-    verifyEmail: user.verifyEmail || false,
-    user_phone_number: user.user_phone_number || '',
+    user_firstname: user?.user_firstname || '',
+    user_lastname: user?.user_lastname || '',
+    user_email: user?.user_email || '',
+    verifyEmail: user?.verifyEmail || false,
+    user_phone_number: user?.user_phone_number || '',
     
-      user_city: user.user_address?.user_city || '',
-      user_street: user.user_address?.user_street || '',
-      user_Bilding_number: user.user_address?.user_Bilding_number || '',
-      user_apartment_number: user.user_address?.user_apartment_number || '', 
-      user_postal_code: user.user_address?.user_postal_code || '',  
+      user_city: user?.user_address?.user_city || '',
+      user_street: user?.user_address?.user_street || '',
+      user_Bilding_number: user?.user_address?.user_Bilding_number || '',
+      user_apartment_number: user?.user_address?.user_apartment_number || '', 
+      user_postal_code: user?.user_address?.user_postal_code || '',  
     replacementEmail: '', // מייל חדש במקרה של שינוי
   });
 
@@ -138,17 +138,17 @@ setFormData({
   const cancelChanges = () => {
     setIsEditing(false)
     setFormData({
-    user_firstname:user.user_firstname|| '',
-    user_lastname:user.user_lastname|| '',
-    user_email:user.user_email|| '',
-    verifyEmail:user.verifyEmail||false,
-    user_phone_number: user.user_phone_number||'',
+    user_firstname:user?.user_firstname|| '',
+    user_lastname:user?.user_lastname|| '',
+    user_email:user?.user_email|| '',
+    verifyEmail:user?.verifyEmail||false,
+    user_phone_number: user?.user_phone_number||'',
     
-      user_city:user.user_address?.user_city||'',
-      user_street:user.user_address?.user_street||'',
-      user_Bilding_number:user.user_address?.user_Bilding_number||'',
-      user_apartment_number:user.user_address?.user_apartment_number||'', 
-      user_postal_code:user.user_address?.user_postal_code||'',
+      user_city:user?.user_address?.user_city||'',
+      user_street:user?.user_address?.user_street||'',
+      user_Bilding_number:user?.user_address?.user_Bilding_number||'',
+      user_apartment_number:user?.user_address?.user_apartment_number||'', 
+      user_postal_code:user?.user_address?.user_postal_code||'',
     replacementEmail: '', // מייל חדש במקרה של שינוי
 
       
@@ -284,12 +284,12 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                           <input 
                             type="text" 
                             name="user_firstname" 
-                            value={formData.user_firstname} 
+                            value={formData?.user_firstname} 
                             onChange={handleInputChange}
                             className="w-full p-2 border border-gray-300 rounded-md"
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded-md">{user.user_firstname}</p>
+                          <p className="p-2 bg-gray-50 rounded-md">{user?.user_firstname}</p>
                         )}
                       </div>
                       <div>
@@ -369,7 +369,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                             className="w-full p-2 border border-gray-300 rounded-md"
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded-md">{user.user_address?.user_city}</p>
+                          <p className="p-2 bg-gray-50 rounded-md">{user?.user_address?.user_city}</p>
                         )}
                       </div>
                       <div>
@@ -383,7 +383,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                             className="w-full p-2 border border-gray-300 rounded-md"
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded-md">{user.user_address?.user_street}</p>
+                          <p className="p-2 bg-gray-50 rounded-md">{user?.user_address?.user_street}</p>
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -398,7 +398,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                               className="w-full p-2 border border-gray-300 rounded-md"
                             />
                           ) : (
-                            <p className="p-2 bg-gray-50 rounded-md">{user.user_address?.user_Bilding_number}</p>
+                            <p className="p-2 bg-gray-50 rounded-md">{user?.user_address?.user_Bilding_number}</p>
                           )}
                         </div>
                         <div>
@@ -412,7 +412,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                               className="w-full p-2 border border-gray-300 rounded-md"
                             />
                           ) : (
-                            <p className="p-2 bg-gray-50 rounded-md">{user.user_address?.user_apartment_number}</p>
+                            <p className="p-2 bg-gray-50 rounded-md">{user?.user_address?.user_apartment_number}</p>
                           )}
                         </div>
                       </div>
@@ -427,7 +427,7 @@ console.log(dataToSend,"Email changed, sending update with new email.");
                             className="w-full p-2 border border-gray-300 rounded-md"
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded-md">{user.user_address?.user_postal_code}</p>
+                          <p className="p-2 bg-gray-50 rounded-md">{user?.user_address?.user_postal_code}</p>
                         )}
                       </div>
                     </div>

@@ -90,7 +90,7 @@ function Profile() {
           <h1 className="text-2xl font-bold">הפרופיל שלי</h1>
           <div className="flex items-center gap-2">
             {/* <span>{userData.user_firstname} {userData.user_lastname}</span> */}
-            <span>{user.user_firstname} {user.user_lastname}</span>
+            <span>{user?.user_firstname} {user?.user_lastname}</span>
             <User className="h-6 w-6" />
           </div>
         </div>
